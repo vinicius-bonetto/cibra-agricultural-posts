@@ -109,7 +109,7 @@ cibra-agricultural-posts/
 ### Passo 1: Clonar o Repositório
 
 ```bash
-git clone https://github.com/seu-usuario/cibra-agricultural-posts.git
+git clone https://github.com/vinicius-bonetto/cibra-agricultural-posts.git
 cd cibra-agricultural-posts
 ```
 

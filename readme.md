@@ -378,8 +378,8 @@ Se eu tivesse mais tempo, implementaria:
 
 Para dúvidas sobre a implementação:
 
-- GitHub: [seu-usuario]
-- Email: seu-email@example.com
+- GitHub: vinicius-bonetto
+- Email: vini.bonetto10@gmail.com
 
 ---
 
@@ -387,7 +387,3 @@ Para dúvidas sobre a implementação:
 
 **Fazemos pela sociedade. Fazemos pelo planeta.**  
 **Fertilizamos parcerias para alimentar e transformar vidas.**
-
----
-
-Desenvolvido com ❤️ para o teste técnico da Cibra

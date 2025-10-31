@@ -1,0 +1,6 @@
+@Cibra.AgriculturalPosts_HostAddress = http://localhost:5107
+
+GET {{Cibra.AgriculturalPosts_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

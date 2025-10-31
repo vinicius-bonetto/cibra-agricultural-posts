@@ -1,0 +1,98 @@
+version: '3.8'
+
+services:
+  # SQL Server Database
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: cibra-sqlserver
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=Your_Strong_Password_123
+      - MSSQL_PID=Developer
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlserver_data:/var/opt/mssql
+    networks:
+      - cibra-network
+    healthcheck:
+      test: /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P Your_Strong_Password_123 -Q "SELECT 1" || exit 1
+      interval: 10s
+      timeout: 3s
+      retries: 10
+      start_period: 10s
+
+  # MongoDB (for AI interactions history - optional)
+  mongodb:
+    image: mongo:7.0
+    container_name: cibra-mongodb
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=admin123
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - cibra-network
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Backend API (.NET 9)
+  api:
+    build:
+      context: ./backend
+      dockerfile: API/Dockerfile
+    container_name: cibra-api
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8080
+      - ConnectionStrings__DefaultConnection=Server=sqlserver,1433;Database=CibraAgriculturalPosts;User Id=sa;Password=Your_Strong_Password_123;TrustServerCertificate=True;MultipleActiveResultSets=true
+      - OpenAI__ApiKey=${OPENAI_API_KEY}
+      - OpenAI__Model=gpt-4o-mini
+      - Cors__AllowedOrigins__0=http://localhost:3000
+    ports:
+      - "5000:8080"
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+      mongodb:
+        condition: service_healthy
+    networks:
+      - cibra-network
+    restart: unless-stopped
+
+  # Frontend (Next.js 14)
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      target: development
+    container_name: cibra-frontend
+    environment:
+      - NODE_ENV=development
+      - NEXT_PUBLIC_API_URL=http://localhost:5000
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+      - /app/.next
+    depends_on:
+      - api
+    networks:
+      - cibra-network
+    restart: unless-stopped
+
+volumes:
+  sqlserver_data:
+    driver: local
+  mongodb_data:
+    driver: local
+
+networks:
+  cibra-network:
+    driver: bridge

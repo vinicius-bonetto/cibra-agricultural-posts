@@ -356,17 +356,6 @@ Se eu tivesse mais tempo, implementaria:
 - [ ] Integração com dados meteorológicos
 - [ ] Relatórios e análises agregadas
 
-## 👨‍💻 Desenvolvimento
-
-### Tempo Gasto
-
-**Total: ~6 horas**
-
-- Arquitetura e planejamento: 1h
-- Backend (.NET 9): 2.5h
-- Frontend (Next.js 14): 2h
-- Docker e infraestrutura: 0.5h
-
 ### Principais Desafios
 
 1. **Clean Architecture em .NET 9**: Adaptação para a nova versão com minimal APIs e top-level statements
